@@ -3,6 +3,7 @@ package com.example.sudoku.controller;
 import com.example.sudoku.model.Board;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
@@ -18,6 +19,14 @@ public class SudokuController {
     @FXML
     public void initialize() {
         fillBoard();
+    }
+
+    @FXML
+    private Button helpButton;
+
+    @FXML
+    private void helpAction(){
+        System.out.println("help");
     }
 
     private void fillBoard() {
