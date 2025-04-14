@@ -4,7 +4,10 @@ import com.example.sudoku.model.Board;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
+
+import java.util.function.UnaryOperator;
 
 public class SudokuController {
     @FXML
@@ -19,12 +22,12 @@ public class SudokuController {
 
     private void fillBoard() {
         board = new Board();
-        board.printBoard();
 
         for (int row = 0; row < board.getBoard().size(); row++) {
             for (int col = 0; col < board.getBoard().size(); col++) {
                 int number = board.getBoard().get(row).get(col);
                 TextField textField = new TextField();
+                textField.setMaxSize(35, 35);
                 textField.setAlignment(Pos.CENTER);
                 textField.setBackground(null);
 
@@ -43,14 +46,37 @@ public class SudokuController {
         }
     }
 
-    private void handleNumberTextField(TextField textField , int row, int col) {
+    private void handleNumberTextField(TextField textField, int row, int col) {
+        // only allows numbers from 1 to 6 to be written
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("[1-6]?")) {
+                return change;
+            }
+            return null;
+        };
+        textField.setTextFormatter(new TextFormatter<>(filter));
+
+        // validates number and applies border color
         textField.setOnKeyReleased(event -> {
-            String number = textField.getText();
-            if(!number.equals("")){
-                System.out.println(board.isValid(row, col, Integer.parseInt(number)));
+            String text = textField.getText();
+
+            if (text.isEmpty()) {
+                textField.setStyle("");
+                return;
             }
 
+            int number = Integer.parseInt(text);
+
+            if (board.isValid(row, col, number)) {
+                textField.setStyle("-fx-border-color: blue; -fx-border-width: 1.5; -fx-background-insets: 0;");
+                textField.setEditable(false);
+                board.getBoard().get(row).set(col, number);
+            } else if(textField.isEditable()) {
+                textField.setStyle("-fx-border-color: red; -fx-border-width: 1.5;");
+            }
         });
     }
+
 
 }
