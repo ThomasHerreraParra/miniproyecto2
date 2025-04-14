@@ -118,19 +118,18 @@ public class Board {
                 return false;
             }
         }
-        return true;
-    }
 
-    /**
-     * Prints the generated board to the console.
-     */
-    public void printBoard() {
-        for (List<Integer> row : board) {
-            for (Integer num : row) {
-                System.out.print(num + " ");
+        int startRow = (row/BLOCK_ROWS) * BLOCK_ROWS;
+        int startCol = (col/BLOCK_COLS) * BLOCK_COLS;
+
+        for (int i = startRow; i < BLOCK_ROWS; i++) {
+            for (int j = startCol; j < BLOCK_COLS; j++) {
+                if (board.get(i).get(j) == candidate && (i != row || j != col)) {
+                    return false;
+                }
             }
-            System.out.println();
         }
+        return true;
     }
 
     /**
