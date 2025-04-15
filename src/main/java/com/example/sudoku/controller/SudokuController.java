@@ -7,7 +7,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
-
 import java.util.function.UnaryOperator;
 
 public class SudokuController {
@@ -26,57 +25,9 @@ public class SudokuController {
 
     @FXML
     private void helpAction() {
-        for (int row = 0; row < board.getBoard().size(); row++) {
-            for (int col = 0; col < board.getBoard().size(); col++) {
-                if (board.getBoard().get(row).get(col) == 0) {
-                    for (int candidate = 1; candidate <= 6; candidate++) {
-                        if (board.isValid(row, col, candidate)) {
-                            highlightSuggestion(row, col, candidate);
-                            return;
-                        }
-                    }
-                }
-            }
-        }
+        HelpStrategy helper = new DefaultHelpStrategy(board, boardGridPane);
+        helper.provideSuggestion();
     }
-
-    private class DefaultHelpStrategy {
-        public void provideSuggestion() {
-            for (int row = 0; row < board.getBoard().size(); row++) {
-                for (int col = 0; col < board.getBoard().size(); col++) {
-                    if (board.getBoard().get(row).get(col) == 0) { // Celda vacía
-                        for (int candidate = 1; candidate <= 6; candidate++) {
-                            if (board.isValid(row, col, candidate)) {
-                                highlightSuggestion(row, col, candidate); // Resalta sugerencia
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void highlightSuggestion(int row, int col, int candidate) {
-        for (javafx.scene.Node node : boardGridPane.getChildren()) {
-            Integer nodeRow = GridPane.getRowIndex(node);
-            Integer nodeCol = GridPane.getColumnIndex(node);
-
-            if (nodeRow != null && nodeCol != null && nodeRow == row && nodeCol == col && node instanceof TextField) {
-                TextField tf = (TextField) node;
-
-                if (tf.getText().isEmpty()) {
-                    tf.setText(String.valueOf(candidate));
-                    tf.setEditable(false);
-                    tf.setStyle("-fx-background-color: yellow; -fx-border-color: blue; -fx-border-width: 1.5;");
-                    board.getBoard().get(row).set(col, candidate);
-                    break;
-                }
-            }
-        }
-    }
-
-
 
     private void fillBoard() {
         board = new Board();
@@ -99,42 +50,56 @@ public class SudokuController {
                 boardGridPane.setRowIndex(textField, row);
                 boardGridPane.setColumnIndex(textField, col);
                 boardGridPane.getChildren().add(textField);
-                handleNumberTextField(textField, row, col);
+
+                // Clase interna para manejar los eventos de validación y cambios en los TextFields
+                new NumberValidationHandler(textField, row, col);
             }
         }
     }
 
-    private void handleNumberTextField(TextField textField, int row, int col) {
-        // only allows numbers from 1 to 6 to be written
-        UnaryOperator<TextFormatter.Change> filter = change -> {
-            String newText = change.getControlNewText();
-            if (newText.matches("[1-6]?")) {
-                return change;
-            }
-            return null;
-        };
-        textField.setTextFormatter(new TextFormatter<>(filter));
+    // Clase interna para la validación de los números en las celdas
+    private class NumberValidationHandler {
+        private TextField textField;
+        private int row;
+        private int col;
 
-        // validates number and applies border color
-        textField.setOnKeyReleased(event -> {
-            String text = textField.getText();
+        public NumberValidationHandler(TextField textField, int row, int col) {
+            this.textField = textField;
+            this.row = row;
+            this.col = col;
+            handleNumberTextField();
+        }
 
-            if (text.isEmpty()) {
-                textField.setStyle("");
-                return;
-            }
+        private void handleNumberTextField() {
+            // solo permite números del 1 al 6
+            UnaryOperator<TextFormatter.Change> filter = change -> {
+                String newText = change.getControlNewText();
+                if (newText.matches("[1-6]?")) {
+                    return change;
+                }
+                return null;
+            };
+            textField.setTextFormatter(new TextFormatter<>(filter));
 
-            int number = Integer.parseInt(text);
+            // valida el número y aplica el color del borde
+            textField.setOnKeyReleased(event -> {
+                String text = textField.getText();
 
-            if (board.isValid(row, col, number)) {
-                textField.setStyle("-fx-border-color: blue; -fx-border-width: 1.5; -fx-background-insets: 0;");
-                textField.setEditable(false);
-                board.getBoard().get(row).set(col, number);
-            } else if(textField.isEditable()) {
-                textField.setStyle("-fx-border-color: red; -fx-border-width: 1.5;");
-            }
-        });
+                if (text.isEmpty()) {
+                    textField.setStyle("");
+                    return;
+                }
+
+                int number = Integer.parseInt(text);
+
+                if (board.isValid(row, col, number)) {
+                    textField.setStyle("-fx-border-color: blue; -fx-border-width: 1.5; -fx-background-insets: 0;");
+                    textField.setEditable(false);
+                    board.getBoard().get(row).set(col, number);
+                } else if(textField.isEditable()) {
+                    textField.setStyle("-fx-border-color: red; -fx-border-width: 1.5;");
+                }
+            });
+        }
     }
-
-
 }
