@@ -22,6 +22,6 @@ public class SudokuStage extends Stage {
     }
 
     private void setIcon() {
-        getIcons().add(new Image(getClass().getResourceAsStream("/sudoku.ico")));
+        getIcons().add(new Image(getClass().getResourceAsStream("/sudoku.png")));
     }
 }
