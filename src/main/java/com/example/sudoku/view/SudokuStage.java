@@ -3,6 +3,7 @@ package com.example.sudoku.view;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 
 import java.io.IOException;
 
@@ -13,6 +14,14 @@ public class SudokuStage extends Stage {
         setTitle("Sudoku");
         setResizable(false);
         setScene(scene);
+
+        // Establecer el ícono de la ventana
+        setIcon();
+
         show();
+    }
+
+    private void setIcon() {
+        getIcons().add(new Image(getClass().getResourceAsStream("/sudoku.ico")));
     }
 }
