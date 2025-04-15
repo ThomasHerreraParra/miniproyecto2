@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="400.0" prefWidth="400.0"
@@ -11,12 +12,12 @@
             fx:controller="com.example.sudoku.controller.SudokuController">
 
     <children>
-        <!-- Título -->
-        <Label layoutX="156.0" layoutY="42.0" text="Sudoku" textFill="#6c5ce7" AnchorPane.topAnchor="40.0">
-            <font>
-                <Font name="Segoe UI Semibold" size="28.0" />
-            </font>
-        </Label>
+        <!-- Imagen del título -->
+        <ImageView fitWidth="200.0" fitHeight="150.0" layoutX="100.0" layoutY="0.0">
+            <image>
+                <Image url="@/titulo-sudoku.png" />
+            </image>
+        </ImageView>
 
         <!-- Tablero -->
         <GridPane fx:id="boardGridPane" gridLinesVisible="false"
@@ -61,7 +62,6 @@
                  -fx-background-radius: 10;
                  -fx-padding: 6 12;
               ">
-
             <Button style="-fx-background-color: #5b4cd6;" />
         </Button>
     </children>

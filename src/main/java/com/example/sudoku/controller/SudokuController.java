@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import java.util.function.UnaryOperator;
+import javafx.scene.text.Font;
 
 public class SudokuController {
     @FXML
@@ -63,9 +64,15 @@ public class SudokuController {
                 String bottom = "#dfe6e9";
                 String left = "#dfe6e9";
 
-                // Aplicamos bordes más oscuros si es borde de bloque
+// Bordes verticales
                 if (col == 2) right = "#636e72"; // borde derecho del bloque vertical
+                if (col == 3) left = "#636e72";  // borde izquierdo del bloque siguiente
+
+// Bordes horizontales
                 if (row == 1 || row == 3) bottom = "#636e72"; // borde inferior del bloque horizontal
+                if (row == 2 || row == 4) top = "#636e72";    // borde superior del bloque siguiente
+
+
 
                 String darkBorders = "-fx-border-color: " + top + " " + right + " " + bottom + " " + left + ";";
 
