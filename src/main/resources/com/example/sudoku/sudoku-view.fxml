@@ -1,33 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.image.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="400.0"
-            style="-fx-background-color: #f4f4f9; -fx-font-family: 'Segoe UI', 'Roboto', sans-serif;"
-            xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.sudoku.controller.SudokuController">
-
+<AnchorPane prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #f4f4f9; -fx-font-family: 'Segoe UI', 'Roboto', sans-serif;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sudoku.controller.SudokuController">
     <children>
-        <!-- Imagen del título -->
         <ImageView fitWidth="200.0" fitHeight="180.0" layoutX="100.0" layoutY="-20.0">
             <image>
                 <Image url="@/titulo-sudoku.png" />
             </image>
         </ImageView>
-
-        <!-- Tablero -->
-        <GridPane fx:id="boardGridPane" gridLinesVisible="false"
-                  layoutX="100.0" layoutY="155.0"
-                  prefHeight="200.0" prefWidth="200.0"
-                  AnchorPane.bottomAnchor="100.0"
-                  AnchorPane.leftAnchor="100.0"
-                  AnchorPane.rightAnchor="100.0"
-                  AnchorPane.topAnchor="100.0"
-                  style="-fx-background-color: transparent;">
+        <GridPane fx:id="boardGridPane" layoutX="100.0" layoutY="155.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0" style="-fx-background-color: transparent;">
             <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" prefWidth="100.0" />
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" prefWidth="100.0" />
@@ -45,24 +29,10 @@
                 <RowConstraints valignment="CENTER" prefHeight="30.0" />
             </rowConstraints>
         </GridPane>
-
-        <!-- Etiqueta de error -->
-        <Label fx:id="errorLabel" text="" alignment="CENTER" prefWidth="400.0"
-               style="-fx-text-fill: #ff7675; -fx-font-size: 14px;"
-               AnchorPane.topAnchor="290.0" />
-
-        <!-- Botón de ayuda -->
+        <Label fx:id="errorLabel" text="" alignment="CENTER" prefWidth="400.0" style="-fx-text-fill: #ff7675; -fx-font-size: 14px;" AnchorPane.topAnchor="290.0" />
         <Button fx:id="helpButton" text="Ayuda" onAction="#helpAction"
                 layoutX="174.0" layoutY="320.0"
-                style="
-                 -fx-background-color: #6c5ce7;
-                 -fx-text-fill: white;
-                 -fx-font-size: 14px;
-                 -fx-font-weight: bold;
-                 -fx-background-radius: 10;
-                 -fx-padding: 6 12;
-              ">
-            <Button style="-fx-background-color: #5b4cd6;" />
-        </Button>
+                style="-fx-background-color: #6c5ce7; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 6 12;"/>
     </children>
 </AnchorPane>
+
