@@ -51,51 +51,66 @@ public class Board {
     }
 
     /**
-     * Recursively fills each 2x3 block with one number.
+     * Randomly fills each 2x3 block with two number.
      *
      * @param blockIndex the index of the current block (ranging from 0 to TOTAL_BLOCKS - 1).
      * @return true if all blocks have been successfully filled; false otherwise.
      */
     private boolean fillBlocks(int blockIndex) {
-        // If all blocks have been processed, the board is complete.
         if (blockIndex == TOTAL_BLOCKS) {
             return true;
         }
 
-        // Determine the block's position.
-        int blockRow = blockIndex / TOTAL_BLOCK_COLS;     // Row index of the block.
-        int blockCol = blockIndex % TOTAL_BLOCK_COLS;       // Column index of the block.
+        int blockRow = blockIndex / TOTAL_BLOCK_COLS;
+        int blockCol = blockIndex % TOTAL_BLOCK_COLS;
         int startRow = blockRow * BLOCK_ROWS;
         int startCol = blockCol * BLOCK_COLS;
 
-        // Prepare a list of candidate numbers [1, 2, 3, 4, 5, 6] in random order.
-        List<Integer> numbers = new ArrayList<>();
-        for (int i = 1; i <= SIZE; i++) {
-            numbers.add(i);
+        // Create a list of all positions at the block and mix it
+        List<int[]> blockPositions = new ArrayList<>();
+        for (int i = 0; i < BLOCK_ROWS; i++) {
+            for (int j = 0; j < BLOCK_COLS; j++) {
+                blockPositions.add(new int[]{startRow + i, startCol + j});
+            }
         }
-        Collections.shuffle(numbers, random);
+        Collections.shuffle(blockPositions, random); // Randomiza posiciones
 
-        // Iterate over every cell in the current 2x3 block.
-        for (int i = startRow; i < startRow + BLOCK_ROWS; i++) {
-            for (int j = startCol; j < startCol + BLOCK_COLS; j++) {
-                // Try each candidate number in the randomized order.
-                for (Integer number : numbers) {
-                    // Check if placing 'number' in cell (i, j) does not violate the row and column constraints.
-                    if (isValid(i, j, number)) {
-                        board.get(i).set(j, number);
-                        // Recursively fill the next block.
-                        if (fillBlocks(blockIndex + 1)) {
-                            return true;
+        List<Integer> numbers = new ArrayList<>();
+        for (int n = 1; n <= SIZE; n++) {
+            numbers.add(n);
+        }
+        Collections.shuffle(numbers, random); // Randomiza números
+
+        // Intentar todas las combinaciones posibles de 2 celdas y 2 números
+        for (int i = 0; i < blockPositions.size(); i++) {
+            for (int j = i + 1; j < blockPositions.size(); j++) {
+                int[] pos1 = blockPositions.get(i);
+                int[] pos2 = blockPositions.get(j);
+
+                for (int m = 0; m < numbers.size(); m++) {
+                    for (int n = m + 1; n < numbers.size(); n++) {
+                        int num1 = numbers.get(m);
+                        int num2 = numbers.get(n);
+
+                        if (isValid(pos1[0], pos1[1], num1) && isValid(pos2[0], pos2[1], num2)) {
+                            board.get(pos1[0]).set(pos1[1], num1);
+                            board.get(pos2[0]).set(pos2[1], num2);
+
+                            if (fillBlocks(blockIndex + 1)) {
+                                return true;
+                            }
+
+                            // Backtrack
+                            board.get(pos1[0]).set(pos1[1], 0);
+                            board.get(pos2[0]).set(pos2[1], 0);
                         }
-                        // Backtracking: reset the cell if subsequent placement fails.
-                        board.get(i).set(j, 0);
                     }
                 }
             }
         }
-        // If no valid placement was found for this block, return false.
         return false;
     }
+
 
     /**
      * Checks whether placing a candidate number at cell (row, col) violates the row or column uniqueness.
