@@ -176,9 +176,9 @@ public class SudokuController {
 
         private void displayErrorMessage(String errorType) {
             String message = switch (errorType) {
-                case "Fila" -> "Error: el número ya existe en esta fila.";
-                case "Columna" -> "Error: el número ya existe en esta columna.";
-                case "Bloque" -> "Error: el número ya existe en este bloque 2x3.";
+                case "Fila" -> "El número ya existe en esta fila";
+                case "Columna" -> "El número ya existe en esta columna";
+                case "Bloque" -> "El número ya existe en este bloque 2x3";
                 default -> "";
             };
 
