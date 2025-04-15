@@ -41,28 +41,36 @@ public class SudokuController {
             for (int col = 0; col < board.getBoard().size(); col++) {
                 int number = board.getBoard().get(row).get(col);
                 TextField textField = new TextField();
+
                 String baseStyle =
                         "-fx-font-size: 16px;" +
                                 "-fx-background-color: #ffffff;" +
-                                "-fx-border-color: #dfe6e9;" +  // Borde normal por defecto
-                                "-fx-border-width: 1.0;";
-
-                // Detectar si la celda pertenece a un bloque 2x3 y aplicar borde más oscuro
-                String blockBorderStyle = "";
-                if ((row < 2 && col < 3) || (row < 2 && col >= 3 && col < 6) || (row >= 2 && row < 4 && col < 3) || (row >= 2 && row < 4 && col >= 3 && col < 6)) {
-                    blockBorderStyle = "-fx-border-color: #2d3436;";  // Borde más oscuro
-                }
+                                "-fx-border-color: #dfe6e9;" +
+                                "-fx-border-width: 1.0;" +
+                                "-fx-border-style: solid;";
 
                 String borderRadius = switch (row + "," + col) {
-                    case "0,0" -> "-fx-background-radius: 10 0 0 0; -fx-border-radius: 10 0 0 0;"; //Esquina superior izquierda
-                    case "0,5" -> "-fx-background-radius: 0 10 0 0; -fx-border-radius: 0 10 0 0;"; //Esquina superior derecha
-                    case "5,0" -> "-fx-background-radius: 0 0 0 10; -fx-border-radius: 0 0 0 10;"; //Esquina inferior izquierda
-                    case "5,5" -> "-fx-background-radius: 0 0 10 0; -fx-border-radius: 0 0 10 0;"; //Esquina inferior derecha
+                    case "0,0" -> "-fx-background-radius: 10 0 0 0; -fx-border-radius: 10 0 0 0;";
+                    case "0,5" -> "-fx-background-radius: 0 10 0 0; -fx-border-radius: 0 10 0 0;";
+                    case "5,0" -> "-fx-background-radius: 0 0 0 10; -fx-border-radius: 0 0 0 10;";
+                    case "5,5" -> "-fx-background-radius: 0 0 10 0; -fx-border-radius: 0 0 10 0;";
                     default -> "-fx-background-radius: 0; -fx-border-radius: 0;";
                 };
 
+                // Colores por defecto (todos claros)
+                String top = "#dfe6e9";
+                String right = "#dfe6e9";
+                String bottom = "#dfe6e9";
+                String left = "#dfe6e9";
+
+                // Aplicamos bordes más oscuros si es borde de bloque
+                if (col == 2) right = "#636e72"; // borde derecho del bloque vertical
+                if (row == 1 || row == 3) bottom = "#636e72"; // borde inferior del bloque horizontal
+
+                String darkBorders = "-fx-border-color: " + top + " " + right + " " + bottom + " " + left + ";";
+
                 textField.setUserData(borderRadius);
-                textField.setStyle(baseStyle + blockBorderStyle + borderRadius);
+                textField.setStyle(baseStyle + borderRadius + darkBorders);
                 textField.setMaxSize(35, 35);
                 textField.setAlignment(Pos.CENTER);
                 textField.setBackground(null);
@@ -78,11 +86,11 @@ public class SudokuController {
                 boardGridPane.setColumnIndex(textField, col);
                 boardGridPane.getChildren().add(textField);
 
-                // Clase interna para manejar los eventos de validación y cambios en los TextFields
                 new NumberValidationHandler(textField, row, col);
             }
         }
     }
+
 
     // Clase interna para la validación de los números en las celdas
     private class NumberValidationHandler {
