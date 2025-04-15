@@ -20,7 +20,7 @@ public class DefaultHelpStrategy implements HelpStrategy {
             for (int col = 0; col < board.getBoard().size(); col++) {
                 if (board.getBoard().get(row).get(col) == 0) {
                     for (int candidate = 1; candidate <= 6; candidate++) {
-                        if (board.isValid(row, col, candidate)) {
+                        if (board.isValid(row, col, candidate).equals("Válido")) {
                             highlightSuggestion(row, col, candidate);
                             return;
                         }
@@ -38,9 +38,21 @@ public class DefaultHelpStrategy implements HelpStrategy {
             if (nodeRow != null && nodeCol != null && nodeRow == row && nodeCol == col && node instanceof TextField) {
                 TextField tf = (TextField) node;
                 if (tf.getText().isEmpty()) {
+                    // Recuperar el borderRadius guardado previamente
+                    String borderRadius = (String) tf.getUserData();
+
                     tf.setText(String.valueOf(candidate));
                     tf.setEditable(false);
-                    tf.setStyle("-fx-background-color: yellow; -fx-border-color: blue; -fx-border-width: 1.5;");
+
+                    // Aplicar el estilo con el borderRadius recuperado
+                    tf.setStyle(
+                            "-fx-background-color: #ffeaa7; " +
+                                    "-fx-border-color: #ffe44f; " +
+                                    "-fx-border-width: 2; " +
+                                    borderRadius // Mantener el borderRadius original
+                    );
+
+                    // Actualizar el tablero con la sugerencia
                     board.getBoard().get(row).set(col, candidate);
                     break;
                 }

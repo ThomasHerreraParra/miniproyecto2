@@ -4,6 +4,7 @@ import com.example.sudoku.model.Board;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
@@ -16,7 +17,11 @@ public class SudokuController {
     private Board board;
 
     @FXML
+    private Label errorLabel;
+
+    @FXML
     public void initialize() {
+        errorLabel.setText("");
         fillBoard();
     }
 
@@ -36,11 +41,33 @@ public class SudokuController {
             for (int col = 0; col < board.getBoard().size(); col++) {
                 int number = board.getBoard().get(row).get(col);
                 TextField textField = new TextField();
+                String baseStyle =
+                        "-fx-font-size: 16px;" +
+                                "-fx-background-color: #ffffff;" +
+                                "-fx-border-color: #dfe6e9;" +  // Borde normal por defecto
+                                "-fx-border-width: 1.0;";
+
+                // Detectar si la celda pertenece a un bloque 2x3 y aplicar borde más oscuro
+                String blockBorderStyle = "";
+                if ((row < 2 && col < 3) || (row < 2 && col >= 3 && col < 6) || (row >= 2 && row < 4 && col < 3) || (row >= 2 && row < 4 && col >= 3 && col < 6)) {
+                    blockBorderStyle = "-fx-border-color: #2d3436;";  // Borde más oscuro
+                }
+
+                String borderRadius = switch (row + "," + col) {
+                    case "0,0" -> "-fx-background-radius: 10 0 0 0; -fx-border-radius: 10 0 0 0;"; //Esquina superior izquierda
+                    case "0,5" -> "-fx-background-radius: 0 10 0 0; -fx-border-radius: 0 10 0 0;"; //Esquina superior derecha
+                    case "5,0" -> "-fx-background-radius: 0 0 0 10; -fx-border-radius: 0 0 0 10;"; //Esquina inferior izquierda
+                    case "5,5" -> "-fx-background-radius: 0 0 10 0; -fx-border-radius: 0 0 10 0;"; //Esquina inferior derecha
+                    default -> "-fx-background-radius: 0; -fx-border-radius: 0;";
+                };
+
+                textField.setUserData(borderRadius);
+                textField.setStyle(baseStyle + blockBorderStyle + borderRadius);
                 textField.setMaxSize(35, 35);
                 textField.setAlignment(Pos.CENTER);
                 textField.setBackground(null);
 
-                if(number > 0){
+                if (number > 0) {
                     textField.setText(String.valueOf(number));
                     textField.setEditable(false);
                 } else {
@@ -71,7 +98,7 @@ public class SudokuController {
         }
 
         private void handleNumberTextField() {
-            // solo permite números del 1 al 6
+            // Solo permite números del 1 al 6
             UnaryOperator<TextFormatter.Change> filter = change -> {
                 String newText = change.getControlNewText();
                 if (newText.matches("[1-6]?")) {
@@ -81,25 +108,66 @@ public class SudokuController {
             };
             textField.setTextFormatter(new TextFormatter<>(filter));
 
-            // valida el número y aplica el color del borde
+            // Valida el número y aplica el color del borde
             textField.setOnKeyReleased(event -> {
                 String text = textField.getText();
 
+                if (!textField.isEditable()) {
+                    return;
+                }
+
                 if (text.isEmpty()) {
-                    textField.setStyle("");
+                    // Restablecer estilo a blanco y borde normal cuando el campo está vacío
+                    textField.setStyle(
+                            "-fx-background-color: white; " +
+                                    "-fx-border-color: #dfe6e9; " +  // Borde normal
+                                    "-fx-border-width: 1px; " +
+                                    textField.getUserData() + // Mantener el border-radius de la esquina específica
+                                    "-fx-background-radius: 8;"
+                    );
+                    errorLabel.setText("");  // Limpiar mensaje de error
                     return;
                 }
 
                 int number = Integer.parseInt(text);
+                String validationResult = board.isValid(row, col, number);
 
-                if (board.isValid(row, col, number)) {
-                    textField.setStyle("-fx-border-color: blue; -fx-border-width: 1.5; -fx-background-insets: 0;");
+                if (validationResult.equals("Válido")) {
+                    // Aplicar estilo con color de fondo y borde cuando el número es válido
+                    textField.setStyle(
+                            "-fx-background-color: #dff9fb;" +
+                                    "-fx-border-color: #74b9ff;" +
+                                    "-fx-border-width: 2;" +
+                                    textField.getUserData() + // Mantener el border-radius de la esquina específica
+                                    "-fx-background-radius: 8;"
+                    );
+                    errorLabel.setText("");
                     textField.setEditable(false);
                     board.getBoard().get(row).set(col, number);
-                } else if(textField.isEditable()) {
-                    textField.setStyle("-fx-border-color: red; -fx-border-width: 1.5;");
+                } else {
+                    // Aplicar estilo con color de fondo y borde cuando el número es inválido
+                    textField.setStyle(
+                            "-fx-background-color: #ffa7a7;" +
+                                    "-fx-border-color: #ff7675;" +
+                                    "-fx-border-width: 2;" +
+                                    textField.getUserData() + // Mantener el border-radius de la esquina específica
+                                    "-fx-background-radius: 8;"
+                    );
+                    displayErrorMessage(validationResult);
                 }
             });
+
+        }
+
+        private void displayErrorMessage(String errorType) {
+            String message = switch (errorType) {
+                case "Fila" -> "Error: el número ya existe en esta fila.";
+                case "Columna" -> "Error: el número ya existe en esta columna.";
+                case "Bloque" -> "Error: el número ya existe en este bloque 2x3.";
+                default -> "";
+            };
+
+            errorLabel.setText(message);
         }
     }
 }

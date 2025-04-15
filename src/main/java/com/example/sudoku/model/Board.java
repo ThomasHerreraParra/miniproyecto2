@@ -92,7 +92,7 @@ public class Board {
                         int num1 = numbers.get(m);
                         int num2 = numbers.get(n);
 
-                        if (isValid(pos1[0], pos1[1], num1) && isValid(pos2[0], pos2[1], num2)) {
+                        if (isValid(pos1[0], pos1[1], num1).equals("Válido") && isValid(pos2[0], pos2[1], num2).equals("Válido")) {
                             board.get(pos1[0]).set(pos1[1], num1);
                             board.get(pos2[0]).set(pos2[1], num2);
 
@@ -120,32 +120,35 @@ public class Board {
      * @param candidate the number to place (from 1 to 6).
      * @return true if the candidate can be placed without conflict; false otherwise.
      */
-    public boolean isValid(int row, int col, int candidate) {
-        // Check the current row for an existing occurrence of the candidate.
+    public String isValid(int row, int col, int candidate) {
+        // Validar si ya existe en la fila
         for (int j = 0; j < SIZE; j++) {
             if (board.get(row).get(j) == candidate) {
-                return false;
+                return "Fila";
             }
         }
-        // Check the current column for an existing occurrence of the candidate.
+
+        // Validar si ya existe en la columna
         for (int i = 0; i < SIZE; i++) {
             if (board.get(i).get(col) == candidate) {
-                return false;
+                return "Columna";
             }
         }
 
-        int startRow = (row/BLOCK_ROWS) * BLOCK_ROWS;
-        int startCol = (col/BLOCK_COLS) * BLOCK_COLS;
-
-        for (int i = startRow; i < BLOCK_ROWS; i++) {
-            for (int j = startCol; j < BLOCK_COLS; j++) {
+        // Validar en el bloque 2x3
+        int startRow = (row / BLOCK_ROWS) * BLOCK_ROWS;
+        int startCol = (col / BLOCK_COLS) * BLOCK_COLS;
+        for (int i = startRow; i < startRow + BLOCK_ROWS; i++) {
+            for (int j = startCol; j < startCol + BLOCK_COLS; j++) {
                 if (board.get(i).get(j) == candidate && (i != row || j != col)) {
-                    return false;
+                    return "Bloque";
                 }
             }
         }
-        return true;
+
+        return "Válido"; // Si no hay conflicto
     }
+
 
     /**
      * Returns the generated board.
