@@ -9,8 +9,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import java.util.function.UnaryOperator;
-import javafx.scene.text.Font;
 
+/**
+ * Controller class for the Sudoku game implemented using JavaFX
+ * Responsible for rendering the Sudoku board, handling user input, providing help via a strategy, and validating number entries
+ */
 public class SudokuController {
     @FXML
     private GridPane boardGridPane;
@@ -20,21 +23,29 @@ public class SudokuController {
     @FXML
     private Label errorLabel;
 
+    /**
+     * Initializes the controller
+     * This method is automatically called after the FXML fields are injected
+     */
     @FXML
     public void initialize() {
         errorLabel.setText("");
         fillBoard();
     }
 
-    @FXML
-    private Button helpButton;
-
+    /**
+     * Action triggered when the help button is pressed
+     */
     @FXML
     private void helpAction() {
         HelpStrategy helper = new DefaultHelpStrategy(board, boardGridPane);
         helper.provideSuggestion();
     }
 
+    /**
+     * Fills the Sudoku board with initial values and prepares the UI
+     * Applies styling, sets up input validation, and creates cell handlers
+     */
     private void fillBoard() {
         board = new Board();
 
@@ -58,17 +69,17 @@ public class SudokuController {
                     default -> "-fx-background-radius: 0; -fx-border-radius: 0;";
                 };
 
-                // Colores por defecto (todos claros)
+                // Default colors (all light)
                 String top = "#dfe6e9";
                 String right = "#dfe6e9";
                 String bottom = "#dfe6e9";
                 String left = "#dfe6e9";
 
-// Bordes verticales
+// Vertical borders
                 if (col == 2) right = "#636e72"; // borde derecho del bloque vertical
                 if (col == 3) left = "#636e72";  // borde izquierdo del bloque siguiente
 
-// Bordes horizontales
+// horizontal borders
                 if (row == 1 || row == 3) bottom = "#636e72"; // borde inferior del bloque horizontal
                 if (row == 2 || row == 4) top = "#636e72";    // borde superior del bloque siguiente
 
@@ -99,12 +110,18 @@ public class SudokuController {
     }
 
 
-    // Clase interna para la validación de los números en las celdas
+    // Inner class for validating numbers in cells
     private class NumberValidationHandler {
         private TextField textField;
         private int row;
         private int col;
 
+        /**
+         * Constructs a new NumberValidationHandler for the specified cell
+         * @param textField the text field representing the cell
+         * @param row       the row index of the cell
+         * @param col       the column index of the cell
+         */
         public NumberValidationHandler(TextField textField, int row, int col) {
             this.textField = textField;
             this.row = row;
@@ -112,8 +129,11 @@ public class SudokuController {
             handleNumberTextField();
         }
 
+        /**
+         * Configures the input filtering, validation, and dynamic styling for the cell.
+         */
         private void handleNumberTextField() {
-            // Solo permite números del 1 al 6
+            // Only allows numbers from 1 to 6
             UnaryOperator<TextFormatter.Change> filter = change -> {
                 String newText = change.getControlNewText();
                 if (newText.matches("[1-6]?")) {
@@ -123,24 +143,22 @@ public class SudokuController {
             };
             textField.setTextFormatter(new TextFormatter<>(filter));
 
-            // Valida el número y aplica el color del borde
+            //Validates the number and applies the border color
             textField.setOnKeyReleased(event -> {
                 String text = textField.getText();
-
                 if (!textField.isEditable()) {
                     return;
                 }
-
                 if (text.isEmpty()) {
-                    // Restablecer estilo a blanco y borde normal cuando el campo está vacío
+                    // Reset style to white and normal border when field is empty
                     textField.setStyle(
                             "-fx-background-color: white; " +
-                                    "-fx-border-color: #dfe6e9; " +  // Borde normal
+                                    "-fx-border-color: #dfe6e9; " +  // normal border
                                     "-fx-border-width: 1px; " +
-                                    textField.getUserData() + // Mantener el border-radius de la esquina específica
+                                    textField.getUserData() + // Maintain the border-radius of the specific corner
                                     "-fx-background-radius: 8;"
                     );
-                    errorLabel.setText("");  // Limpiar mensaje de error
+                    errorLabel.setText("");  // Clear error message
                     return;
                 }
 
@@ -148,7 +166,7 @@ public class SudokuController {
                 String validationResult = board.isValid(row, col, number);
 
                 if (validationResult.equals("Válido")) {
-                    // Aplicar estilo con color de fondo y borde cuando el número es válido
+                    // Apply style with background and border color when the number is valid
                     textField.setStyle(
                             "-fx-background-color: #dff9fb;" +
                                     "-fx-border-color: #74b9ff;" +
@@ -160,7 +178,7 @@ public class SudokuController {
                     textField.setEditable(false);
                     board.getBoard().get(row).set(col, number);
                 } else {
-                    // Aplicar estilo con color de fondo y borde cuando el número es inválido
+                    // Apply style with background and border color when the number is invalid
                     textField.setStyle(
                             "-fx-background-color: #ffa7a7;" +
                                     "-fx-border-color: #ff7675;" +
@@ -174,6 +192,10 @@ public class SudokuController {
 
         }
 
+        /**
+         * Displays a custom error message based on the validation result
+         * @param errorType the validation error type (row, column, or block)
+         */
         private void displayErrorMessage(String errorType) {
             String message = switch (errorType) {
                 case "Fila" -> "El número ya existe en esta fila";

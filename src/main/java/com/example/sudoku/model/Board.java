@@ -73,15 +73,15 @@ public class Board {
                 blockPositions.add(new int[]{startRow + i, startCol + j});
             }
         }
-        Collections.shuffle(blockPositions, random); // Randomiza posiciones
+        Collections.shuffle(blockPositions, random); //Randomize positions
 
         List<Integer> numbers = new ArrayList<>();
         for (int n = 1; n <= SIZE; n++) {
             numbers.add(n);
         }
-        Collections.shuffle(numbers, random); // Randomiza números
+        Collections.shuffle(numbers, random); // Randomize numbers
 
-        // Intentar todas las combinaciones posibles de 2 celdas y 2 números
+        // Try all possible combinations of 2 cells and 2 numbers
         for (int i = 0; i < blockPositions.size(); i++) {
             for (int j = i + 1; j < blockPositions.size(); j++) {
                 int[] pos1 = blockPositions.get(i);
@@ -121,21 +121,21 @@ public class Board {
      * @return true if the candidate can be placed without conflict; false otherwise.
      */
     public String isValid(int row, int col, int candidate) {
-        // Validar si ya existe en la fila
+        // Validate if it already exists in the row
         for (int j = 0; j < SIZE; j++) {
             if (board.get(row).get(j) == candidate) {
                 return "Fila";
             }
         }
 
-        // Validar si ya existe en la columna
+        // Validate if it already exists in the column
         for (int i = 0; i < SIZE; i++) {
             if (board.get(i).get(col) == candidate) {
                 return "Columna";
             }
         }
 
-        // Validar en el bloque 2x3
+        // Validate in block 2x3
         int startRow = (row / BLOCK_ROWS) * BLOCK_ROWS;
         int startCol = (col / BLOCK_COLS) * BLOCK_COLS;
         for (int i = startRow; i < startRow + BLOCK_ROWS; i++) {
@@ -146,7 +146,7 @@ public class Board {
             }
         }
 
-        return "Válido"; // Si no hay conflicto
+        return "Válido"; // If there is no conflict
     }
 
 
