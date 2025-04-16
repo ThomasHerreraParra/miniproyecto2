@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
 <AnchorPane prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #f4f4f9; -fx-font-family: 'Segoe UI', 'Roboto', sans-serif;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sudoku.controller.SudokuController">
     <children>
-        <ImageView fitWidth="200.0" fitHeight="180.0" layoutX="100.0" layoutY="-20.0">
+        <ImageView fitHeight="180.0" fitWidth="200.0" layoutX="100.0" layoutY="-20.0">
             <image>
                 <Image url="@/titulo-sudoku.png" />
             </image>
         </ImageView>
-        <GridPane fx:id="boardGridPane" layoutX="100.0" layoutY="155.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0" style="-fx-background-color: transparent;">
+        <GridPane fx:id="boardGridPane" layoutX="100.0" layoutY="155.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0">
             <columnConstraints>
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" prefWidth="100.0" />
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" prefWidth="100.0" />
@@ -21,18 +22,18 @@
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" prefWidth="100.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints valignment="CENTER" prefHeight="30.0" />
-                <RowConstraints valignment="CENTER" prefHeight="30.0" />
-                <RowConstraints valignment="CENTER" prefHeight="30.0" />
-                <RowConstraints valignment="CENTER" prefHeight="30.0" />
-                <RowConstraints valignment="CENTER" prefHeight="30.0" />
-                <RowConstraints valignment="CENTER" prefHeight="30.0" />
+                <RowConstraints prefHeight="30.0" valignment="CENTER" />
+                <RowConstraints prefHeight="30.0" valignment="CENTER" />
+                <RowConstraints prefHeight="30.0" valignment="CENTER" />
+                <RowConstraints prefHeight="30.0" valignment="CENTER" />
+                <RowConstraints prefHeight="30.0" valignment="CENTER" />
+                <RowConstraints prefHeight="30.0" valignment="CENTER" />
             </rowConstraints>
         </GridPane>
-        <Label fx:id="errorLabel" text="" alignment="CENTER" prefWidth="400.0" style="-fx-text-fill: #ff7675; -fx-font-size: 14px;" AnchorPane.topAnchor="290.0" />
-        <Button fx:id="helpButton" text="Ayuda" onAction="#helpAction"
-                layoutX="174.0" layoutY="320.0"
-                style="-fx-background-color: #6c5ce7; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 6 12;"/>
+        <Label fx:id="errorLabel" alignment="CENTER" prefWidth="400.0" style="-fx-text-fill: #ff7675; -fx-font-size: 14px;" text="" AnchorPane.topAnchor="290.0" />
+        <Button layoutX="174.0" layoutY="320.0" onAction="#helpAction" style="-fx-background-color: #6c5ce7; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 6 12;" text="Ayuda">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
     </children>
 </AnchorPane>
-
